@@ -8,6 +8,7 @@ output:
 
 ## Loading and preprocessing the data
 The following code shows how the data was imported.
+**Note:** When testing the file on RStudio, set your working directory by selecting the folder under the Files tab, clicking More followed by *Set As Working Directory*
 ```{r data import}
 data <- read.csv('activity.csv')
 ```
@@ -32,14 +33,39 @@ The following code is used to determine the average number of steps per 5-min in
 dayagg <- aggregate(steps~interval,data,mean)
 plot(dayagg$interval,dayagg$steps,type = "l",xlab='Time of day',ylab='Average number of steps', main='Average daily number of steps per 5-min interval')
 ```
-
+The following code is used to determine the interval that contains the largest number of steps
+```{r}
+maxsteps <- max(dayagg$steps)
+indmax <- which(dayagg$steps == maxsteps)
+maxintbeg <- dayagg[indmax - 1, 'interval']
+maxintend <- dayagg[indmax, 'interval']
+```
+The time at which the maximum number of steps occur is between `r maxintbeg` and `r maxintend`. 
 
 ## Imputing missing values
-All missing values were imputed using the average number of steps for that particular 5-min interval.
+All missing values were imputed using the average number of steps for that particular 5-min interval. Then, a histogram is plotted using the imputed data. 
 ```{r}
-data[is.na(data)] = 0
-hist(agg$steps)
+data$steps[is.na(data$steps)] <- dayagg$steps[match(data$interval,dayagg$interval)][which(is.na(data$steps))]
+impagg <- aggregate(steps~date,data,sum)
+hist(impagg$steps)
 ```
 
+The only difference between the unimputed and imputed histograms is the height of the column showing the frequency of days between 10k and 15k steps. Its frequency goes up from 30 to 35 after imputation.
+
+The following code is used to determine the mean and median for the imputed dataset
+```{r}
+impmeansteps <- mean(impagg$steps)
+impmediansteps <- median(impagg$steps)
+```
+
+The mean number of steps per day is `r format(impmeansteps, scientific=F)` and the median number of steps is `r format(impmediansteps, scientific=F)`.
 
 ## Are there differences in activity patterns between weekdays and weekends?
+The following code adds a column 
+```{r}
+wkday <- c('Monday','Tuesday','Wednesday','Thursday','Friday')
+data$weekend <- factor((weekdays(as.Date(data$date)) %in% wkday), 
+         levels=c(FALSE, TRUE), labels=c('weekend', 'weekday'))
+
+wkndagg <- aggregate(steps~interval + weekend,data,mean)
+```

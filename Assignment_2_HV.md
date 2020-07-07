@@ -8,6 +8,7 @@ output:
 
 ## Loading and preprocessing the data
 The following code shows how the data was imported.
+**Note:** When testing the file on RStudio, set your working directory by selecting the folder under the Files tab, clicking More followed by *Set As Working Directory*
 
 ```r
 data <- read.csv('activity.csv')
@@ -36,18 +37,38 @@ The following code is used to determine the average number of steps per 5-min in
 
 ```r
 dayagg <- aggregate(steps~interval,data,mean)
-plot(dayagg$interval,dayagg$steps,type = "l",xlab='Time of day',ylab='Average numbr of steps', main='Average daily number of steps per 5-min interval')
+plot(dayagg$interval,dayagg$steps,type = "l",xlab='Time of day',ylab='Average number of steps', main='Average daily number of steps per 5-min interval')
 ```
 
 ![](Assignment_2_HV_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
-
-
-## Imputing missing values
-All missing values were imputed by replacing NA with zero. The code below shows how this was done.
+The following code is used to determine the interval that contains the largest number of steps
 
 ```r
-data[is.na(data)] = 0
+maxsteps <- max(dayagg$steps)
+indmax <- which(dayagg$steps == maxsteps)
+maxintbeg <- dayagg[indmax - 1, 'interval']
+maxintend <- dayagg[indmax, 'interval']
+```
+The time at which the maximum number of steps occur is between 830 and 835. 
+
+## Imputing missing values
+All missing values were imputed using the average number of steps for that particular 5-min interval. Then, a histogram is plotted using the imputed data
+
+```r
+data$steps[is.na(data$steps)] <- dayagg$steps[match(data$interval,dayagg$interval)][which(is.na(data$steps))]
+impagg <- aggregate(steps~date,data,sum)
+hist(impagg$steps)
 ```
 
+![](Assignment_2_HV_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+
+The following code is used to determine the mean and median for the imputed dataset
+
+```r
+impmeansteps <- mean(impagg$steps)
+impmediansteps <- median(impagg$steps)
+```
+
+The mean number of steps per day is 10766.19 and the median number of steps is 10766.19.
 
 ## Are there differences in activity patterns between weekdays and weekends?

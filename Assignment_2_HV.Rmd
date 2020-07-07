@@ -1,0 +1,45 @@
+---
+title: "Reproducible Research: Peer Assessment 1"
+output: 
+  html_document:
+    keep_md: true
+---
+
+
+## Loading and preprocessing the data
+The following code shows how the data was imported.
+```{r data import}
+data <- read.csv('activity.csv')
+```
+
+## Histogram showing the total number of steps taken everyday
+The following code was used to determine the total number of steps per day
+```{r histogram}
+agg <- aggregate(steps~date,data,sum)
+hist(agg$steps)
+```
+
+## What is mean total number of steps taken per day?
+```{r}
+meansteps <- mean(agg$steps)
+mediansteps <- median(agg$steps)
+```
+The mean number of steps per day is `r format(meansteps, scientific=F)` and the median number of steps is `r format(mediansteps, scientific=F)`.  
+
+## What is the average daily activity pattern?
+The following code is used to determine the average number of steps per 5-min interval and plots the resulting data
+```{r}
+dayagg <- aggregate(steps~interval,data,mean)
+plot(dayagg$interval,dayagg$steps,type = "l",xlab='Time of day',ylab='Average number of steps', main='Average daily number of steps per 5-min interval')
+```
+
+
+## Imputing missing values
+All missing values were imputed using the average number of steps for that particular 5-min interval.
+```{r}
+data[is.na(data)] = 0
+hist(agg$steps)
+```
+
+
+## Are there differences in activity patterns between weekdays and weekends?

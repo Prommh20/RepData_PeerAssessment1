@@ -85,7 +85,7 @@ wkndagg <- aggregate(steps~interval + weekend,data,mean)
 
 library(ggplot2)
 
-ggplot(data=wkndagg,aes(x=interval,y=steps,group=weekend,color=weekend)) + geom_line() + labs(x='Time of day', y='Average steps',title='Average steps for weekdays and weekends')
+ggplot(data=wkndagg,aes(x=interval,y=steps,color=weekend)) + geom_line() + labs(x='Time of day', y='Average steps',title='Average steps for weekdays and weekends') + facet_wrap(~weekend, ncol=1, nrow=2)
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-6-1.png)<!-- -->

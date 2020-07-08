@@ -71,7 +71,7 @@ wkndagg <- aggregate(steps~interval + weekend,data,mean)
 
 library(ggplot2)
 
-ggplot(data=wkndagg,aes(x=interval,y=steps,group=weekend,color=weekend)) + geom_line() + labs(x='Time of day', y='Average steps',title='Average steps for weekdays and weekends')
+ggplot(data=wkndagg,aes(x=interval,y=steps,color=weekend)) + geom_line() + labs(x='Time of day', y='Average steps',title='Average steps for weekdays and weekends') + facet_wrap(~weekend, ncol=1, nrow=2)
 ```
 
 There is an increased number of steps during weekends, mostly in the afternoon and evenings. Also, there is an increase in the number of steps between 5:00 and 10:00 during weekdays, possibly due to commuting and pre-work exercise.

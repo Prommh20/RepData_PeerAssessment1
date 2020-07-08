@@ -11,6 +11,8 @@ The following code shows how the data was imported.
 **Note:** When testing the code on RStudio, donwload the csv and markdown files to your folder of interest. Then, set your working directory by selecting the appropriate folder under the Files tab, clicking More followed by *Set As Working Directory*.
 
 ```r
+fil <- download.file('https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip','activity.zip')
+unzip('activity.zip')
 data <- read.csv('activity.csv')
 ```
 
@@ -41,6 +43,7 @@ plot(dayagg$interval,dayagg$steps,type = "l",xlab='Time of day',ylab='Average nu
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+
 The following code is used to determine the interval that contains the largest number of steps
 
 ```r
